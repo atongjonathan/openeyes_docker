@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  db:
+    build: ./db
+    image: mariadb:10.4
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: openeyes
+      MYSQL_USER: openeyes
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db/sample_db.sql:/docker-entrypoint-initdb.d/sample_db.sql:ro
+    
+      
+
+  app:
+    build: ./app
+    container_name: openeyes_app
+    restart: always
+    environment:
+      DB_HOST: db
+      DB_USER: openeyes
+      DB_PASSWORD: password
+      DB_NAME: openeyes
+    ports:
+      - "80:80"
+    depends_on:
+      - db
